@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Inscription - Leyonwave</title>
+  <link rel="stylesheet" href="presentation.css">
+</head>
+<body>
+
+  <!-- En-tête avec logo animé -->
+  <div class="header">
+    <img src="https://i.postimg.cc/hGqHQms4/IMG-20250508-WA0087-removebg-preview.png" alt="Leyonwave Logo" class="logo">
+    <div class="site-title">LEYONWAVE</div>
+  </div>
+
+  <h1>TESTE D'ÉVALUATION DU SÉMINAIRE DE GRAPHIQUE DESIGN DE LEYONWAVE</h1>
+
+  <form id="registrationForm">
+    <input type="text" id="nom" placeholder="Nom" required>
+    <input type="text" id="prenom" placeholder="Prénom" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="text" id="numero" placeholder="Numéro d'ordre (ex: 001)" required>
+    <input type="password" id="mpu" placeholder="Mot de passe unique" required>
+    <div class="error" id="errorMessage"></div>
+    <button type="submit">Valider</button>
+  </form>
+
+  <script>
+    document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const numero = document.getElementById('numero').value.trim();
+      const mpu = document.getElementById('mpu').value.trim();
+      const nom = document.getElementById('nom').value.trim();
+      const prenom = document.getElementById('prenom').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const errorMessage = document.getElementById('errorMessage');
+
+      const response = await fetch('codes.json');
+      const data = await response.json();
+      
+      if (data.participants[numero] && data.participants[numero] === mpu) {
+        localStorage.setItem('participant', JSON.stringify({ numero, nom, prenom, email }));
+        window.location.href = `questions-${numero}.html`;
+      } else {
+        errorMessage.textContent = "Numéro d'ordre ou mot de passe incorrect.";
+      }
+    });
+  </script>
+</body>
+</html>

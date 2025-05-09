@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Questions du participant</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Questions personnalisées</h1>
+  <form id="questionsForm"></form>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const numero = urlParams.get('numero');
+
+    const form = document.getElementById('questionsForm');
+
+    async function loadQuestions() {
+      try {
+        const response = await fetch(`questions/questions-${numero}.json`);
+        const data = await response.json();
+        data.questions.forEach((q, i) => {
+          const label = document.createElement('label');
+          label.textContent = `${i + 1}. ${q}`;
+          const input = document.createElement('textarea');
+          input.name = `q${i + 1}`;
+          input.required = true;
+          input.rows = 2;
+          form.appendChild(label);
+          form.appendChild(input);
+        });
+
+        const submitBtn = document.createElement('button');
+        submitBtn.type = "submit";
+        submitBtn.textContent = "Envoyer";
+        form.appendChild(submitBtn);
+      } catch (err) {
+        form.innerHTML = "<p>Erreur de chargement des questions.</p>";
+      }
+    }
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const data = new FormData(form);
+      const responses = {};
+      data.forEach((val, key) => { responses[key] = val; });
+      const participant = JSON.parse(localStorage.getItem('participant'));
+
+      // Envoyer les réponses via Telegram ou API plus tard
+      console.log("Réponses :", responses);
+      alert("Merci pour vos réponses !");
+    });
+
+    loadQuestions();
+  </script>
+</body>
+</html>
